@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiCalculator.Pages.CalculatorPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:MauiCalculator.Controls"
+    Title="Calculator">
+
+    <Grid
+        BackgroundColor="{DynamicResource BackgroundColor}"
+        RowDefinitions="Auto,*"
+        Padding="16">
+
+        <!-- Display -->
+        <Border
+            Grid.Row="0"
+            StrokeThickness="1"
+            Padding="12"
+            Margin="0,0,0,12">
+
+            <Label
+                TextColor="{DynamicResource TextColor}"
+                Text="{Binding Display}"
+                FontSize="48"
+                HorizontalTextAlignment="End"
+                VerticalTextAlignment="Center"
+                LineBreakMode="NoWrap"/>
+        </Border>
+
+        <!-- Buttons -->
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="*,*,*,*"
+            RowDefinitions="*,*,*,*,*"
+            RowSpacing="8"
+            ColumnSpacing="8">
+
+            <!-- Row 1 -->
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="7"
+                                 Text="7"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="0"
+                                 Grid.Column="0"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="8"
+                                 Text="8"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="0"
+                                 Grid.Column="1"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="9"
+                                 Text="9"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="0"
+                                 Grid.Column="2"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="÷"
+                                 Text="÷"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="0"
+                                 Grid.Column="3"/>
+
+            <!-- Row 2 -->
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="4"
+                                 Text="4"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="1"
+                                 Grid.Column="0"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="5"
+                                 Text="5"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="1"
+                                 Grid.Column="1"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="6"
+                                 Text="6"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="1"
+                                 Grid.Column="2"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="*"
+                                 Text="×"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="1"
+                                 Grid.Column="3"/>
+
+            <!-- Row 3 -->
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="1"
+                                 Text="1"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="2"
+                                 Grid.Column="0"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="2"
+                                 Text="2"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="2"
+                                 Grid.Column="1"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="3"
+                                 Text="3"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="2"
+                                 Grid.Column="2"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="-"
+                                 Text="−"
+                                 Grid.Row="2"
+                                 Grid.Column="3"/>
+
+            <!-- Row 4 -->
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="0"
+                                 Text="0"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="3"
+                                 Grid.Column="0"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="."
+                                 Text="."
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="3"
+                                 Grid.Column="1"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="="
+                                 Text="="
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="3"
+                                 Grid.Column="2"/>
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="+"
+                                 Text="+"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="3"
+                                 Grid.Column="3"/>
+
+            <!-- Row 5 -->
+            <controls:CalcButton Command="{Binding ButtonCommand}"
+                                 CommandParameter="C"
+                                 Text="C"
+                                 Style="{StaticResource OperatorButtonStyle}"
+                                 Grid.Row="4"
+                                 Grid.ColumnSpan="4"/>
+
+        </Grid>
+    </Grid>
+</ContentPage>
