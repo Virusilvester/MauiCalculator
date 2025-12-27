@@ -29,7 +29,6 @@ jobs:
 
     # --------------------
     # VERSION PARSING
-    # v1.1.1 → Display=1.1.1 | Version=111
     # --------------------
     - name: Parse version
       shell: pwsh
