@@ -28,24 +28,22 @@ jobs:
     # WINDOWS BUILD
     # --------------------
     - name: Build Windows MSIX
-      working-directory: MauiCalculator
       run: |
         dotnet publish MauiCalculator.csproj `
           -f net8.0-windows10.0.19041.0 `
           -c Release `
           -p:GenerateAppxPackageOnBuild=true `
-          -o ../artifacts/windows
+          -o ./artifacts/windows
 
     # --------------------
     # ANDROID BUILD
     # --------------------
     - name: Build Android APK
-      working-directory: MauiCalculator
       run: |
         dotnet publish MauiCalculator.csproj `
           -f net8.0-android `
           -c Release `
-          -o ../artifacts/android
+          -o ./artifacts/android
 
     # --------------------
     # UPLOAD ARTIFACTS
