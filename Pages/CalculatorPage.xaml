@@ -151,10 +151,13 @@
                             SelectionChanged="OnHistorySelected">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Label
-                            Text="{Binding}"
-                            FontSize="14"
-                            TextColor="{DynamicResource TextColor}"/>
+                        <Grid Opacity="0"
+                              Loaded="OnHistoryItemLoaded">
+                            <Label
+                                Text="{Binding}"
+                                FontSize="14"
+                                TextColor="{DynamicResource TextColor}"/>
+                        </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
