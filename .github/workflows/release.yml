@@ -59,12 +59,6 @@ jobs:
           -p:GenerateAppxPackageOnBuild=true `
           -o ./artifacts/windows
 
-    - name: Rename Windows MSIX
-      shell: pwsh
-      run: |
-        $msix = Get-ChildItem artifacts/windows -Filter *.msix | Select-Object -First 1
-        Rename-Item $msix.FullName "$env:PROJECT_NAME-${{ github.ref_name }}-Windows.msix"
-
     # --------------------
     # ANDROID APK
     # --------------------
@@ -76,12 +70,6 @@ jobs:
           -p:ApplicationDisplayVersion=${{ env.DISPLAY_VERSION }} `
           -p:ApplicationVersion=${{ env.APP_VERSION }} `
           -o ./artifacts/android
-
-    - name: Rename Android APK
-      shell: pwsh
-      run: |
-        $apk = Get-ChildItem artifacts/android -Filter *.apk | Select-Object -First 1
-        Rename-Item $apk.FullName "$env:PROJECT_NAME-${{ github.ref_name }}-Android.apk"
 
     # --------------------
     # RELEASE
