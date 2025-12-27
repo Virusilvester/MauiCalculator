@@ -11,7 +11,6 @@ public class CalculatorViewModel : BaseViewModel
 {
     public ObservableCollection<string> History { get; } = new();
     private readonly CalculatorEngine _engine = new();
-    private double _firstNumber;
     private string _operator = string.Empty;
     private bool _isNewEntry;
     private string _currentExpression = string.Empty;
