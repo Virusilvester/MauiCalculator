@@ -22,7 +22,7 @@ jobs:
       run: dotnet workload install maui
 
     - name: Restore dependencies
-      run: dotnet restore MauiCalculator/MauiCalculator.csproj
+      run: dotnet restore MauiCalculator.csproj
 
     # --------------------
     # WINDOWS BUILD
