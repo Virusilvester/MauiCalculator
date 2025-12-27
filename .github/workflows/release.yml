@@ -1,0 +1,61 @@
+name: MAUI Release Build
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install MAUI workload
+      run: dotnet workload install maui
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # --------------------
+    # WINDOWS BUILD
+    # --------------------
+    - name: Build Windows MSIX
+      run: |
+        dotnet publish MauiCalculator/MauiCalculator.csproj `
+          -f net8.0-windows10.0.19041.0 `
+          -c Release `
+          -p:GenerateAppxPackageOnBuild=true `
+          -o ./artifacts/windows
+
+    # --------------------
+    # ANDROID BUILD
+    # --------------------
+    - name: Build Android APK
+      run: |
+        dotnet publish MauiCalculator/MauiCalculator.csproj `
+          -f net8.0-android `
+          -c Release `
+          -o ./artifacts/android
+
+    # --------------------
+    # UPLOAD ARTIFACTS
+    # --------------------
+    - name: Upload Windows Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Windows-MSIX
+        path: artifacts/windows
+
+    - name: Upload Android Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Android-APK
+        path: artifacts/android
