@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '9.0.x'
 
     - name: Install MAUI workload
       run: dotnet workload install maui
@@ -30,7 +30,7 @@ jobs:
     - name: Build Windows MSIX
       run: |
         dotnet publish MauiCalculator.csproj `
-          -f net8.0-windows10.0.19041.0 `
+          -f net9.0-windows10.0.19041.0 `
           -c Release `
           -p:GenerateAppxPackageOnBuild=true `
           -o ./artifacts/windows
@@ -41,7 +41,7 @@ jobs:
     - name: Build Android APK
       run: |
         dotnet publish MauiCalculator.csproj `
-          -f net8.0-android `
+          -f net9.0-android `
           -c Release `
           -o ./artifacts/android
 
