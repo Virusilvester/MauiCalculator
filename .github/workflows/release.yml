@@ -5,27 +5,46 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write
+
+env:
+  PROJECT_NAME: MauiCalculator
+  VERSION: ${{ github.ref_name }}
+
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
+    # --------------------
+    # CHECKOUT
+    # --------------------
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    # --------------------
+    # SETUP DOTNET
+    # --------------------
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.0.x'
 
+    # --------------------
+    # INSTALL MAUI
+    # --------------------
     - name: Install MAUI workload
       run: dotnet workload install maui
 
+    # --------------------
+    # RESTORE
+    # --------------------
     - name: Restore dependencies
       run: dotnet restore MauiCalculator.csproj
 
     # --------------------
-    # WINDOWS BUILD
+    # BUILD WINDOWS (MSIX)
     # --------------------
     - name: Build Windows MSIX
       run: |
@@ -36,7 +55,16 @@ jobs:
           -o ./artifacts/windows
 
     # --------------------
-    # ANDROID BUILD
+    # RENAME WINDOWS MSIX
+    # --------------------
+    - name: Rename Windows MSIX
+      shell: pwsh
+      run: |
+        $msix = Get-ChildItem artifacts/windows -Filter *.msix | Select-Object -First 1
+        Rename-Item $msix.FullName "$env:PROJECT_NAME-$env:VERSION-Windows.msix"
+
+    # --------------------
+    # BUILD ANDROID (APK)
     # --------------------
     - name: Build Android APK
       run: |
@@ -46,16 +74,38 @@ jobs:
           -o ./artifacts/android
 
     # --------------------
-    # UPLOAD ARTIFACTS
+    # RENAME ANDROID APK
     # --------------------
-    - name: Upload Windows Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Windows-MSIX
-        path: artifacts/windows
+    - name: Rename Android APK
+      shell: pwsh
+      run: |
+        $apk = Get-ChildItem artifacts/android -Filter *.apk | Select-Object -First 1
+        Rename-Item $apk.FullName "$env:PROJECT_NAME-$env:VERSION-Android.apk"
 
-    - name: Upload Android Artifact
-      uses: actions/upload-artifact@v4
+    # --------------------
+    # CREATE GITHUB RELEASE
+    # --------------------
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: Android-APK
-        path: artifacts/android
+        name: "${{ env.PROJECT_NAME }} ${{ env.VERSION }}"
+        tag_name: ${{ env.VERSION }}
+        body: |
+          ## 🚀 ${{ env.PROJECT_NAME }} ${{ env.VERSION }}
+
+          ### ✨ What's New
+          - Migrated project to **.NET 9**
+          - Added **Windows MSIX installer**
+          - Added **Android APK build**
+          - Improved calculator UI & theming
+          - Fully automated CI/CD pipeline
+
+          ### 📦 Downloads
+          - **Windows**: MSIX installer
+          - **Android**: APK package
+
+          ---
+          Built automatically via GitHub Actions 🤖
+        files: |
+          artifacts/windows/*.msix
+          artifacts/android/*.apk
