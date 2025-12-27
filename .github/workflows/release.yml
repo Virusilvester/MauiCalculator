@@ -24,6 +24,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore MauiCalculator.csproj
 
+    - name: Clean previous builds
+      run: dotnet clean MauiCalculator.csproj
+
+
     # --------------------
     # WINDOWS BUILD
     # --------------------
