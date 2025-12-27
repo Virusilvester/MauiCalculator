@@ -10,113 +10,96 @@ permissions:
 
 env:
   PROJECT_NAME: MauiCalculator
-  TAG_VERSION: ${{ github.ref_name }}
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    # --------------------
-    # CHECKOUT
-    # --------------------
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # --------------------
-    # SETUP DOTNET 9
-    # --------------------
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.0.x'
 
-    # --------------------
-    # INSTALL MAUI
-    # --------------------
     - name: Install MAUI workload
       run: dotnet workload install maui
 
     # --------------------
-    # NORMALIZE VERSION
+    # VERSION PARSING
+    # v1.1.1 → Display=1.1.1 | Version=111
     # --------------------
-    - name: Normalize version
+    - name: Parse version
       shell: pwsh
       run: |
-        $version = "${{ github.ref_name }}".TrimStart('v')
-        echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+        $tag = "${{ github.ref_name }}".TrimStart('v')
+        $parts = $tag.Split('.')
+        $intVersion = "$($parts[0])$($parts[1])$($parts[2])"
+
+        echo "DISPLAY_VERSION=$tag" >> $env:GITHUB_ENV
+        echo "APP_VERSION=$intVersion" >> $env:GITHUB_ENV
 
     # --------------------
     # RESTORE
     # --------------------
-    - name: Restore dependencies
-      run: dotnet restore MauiCalculator.csproj -p:ApplicationVersion=${{ env.APP_VERSION }}
+    - name: Restore
+      run: dotnet restore MauiCalculator.csproj
 
     # --------------------
-    # BUILD WINDOWS (MSIX)
+    # WINDOWS MSIX
     # --------------------
     - name: Build Windows MSIX
       run: |
         dotnet publish MauiCalculator.csproj `
           -f net9.0-windows10.0.19041.0 `
           -c Release `
+          -p:ApplicationDisplayVersion=${{ env.DISPLAY_VERSION }} `
           -p:ApplicationVersion=${{ env.APP_VERSION }} `
           -p:GenerateAppxPackageOnBuild=true `
           -o ./artifacts/windows
 
-    # --------------------
-    # RENAME WINDOWS MSIX
-    # --------------------
     - name: Rename Windows MSIX
       shell: pwsh
       run: |
         $msix = Get-ChildItem artifacts/windows -Filter *.msix | Select-Object -First 1
-        Rename-Item $msix.FullName "$env:PROJECT_NAME-$env:TAG_VERSION-Windows.msix"
+        Rename-Item $msix.FullName "$env:PROJECT_NAME-${{ github.ref_name }}-Windows.msix"
 
     # --------------------
-    # BUILD ANDROID (APK)
+    # ANDROID APK
     # --------------------
     - name: Build Android APK
       run: |
         dotnet publish MauiCalculator.csproj `
           -f net9.0-android `
           -c Release `
+          -p:ApplicationDisplayVersion=${{ env.DISPLAY_VERSION }} `
           -p:ApplicationVersion=${{ env.APP_VERSION }} `
           -o ./artifacts/android
 
-    # --------------------
-    # RENAME ANDROID APK
-    # --------------------
     - name: Rename Android APK
       shell: pwsh
       run: |
         $apk = Get-ChildItem artifacts/android -Filter *.apk | Select-Object -First 1
-        Rename-Item $apk.FullName "$env:PROJECT_NAME-$env:TAG_VERSION-Android.apk"
+        Rename-Item $apk.FullName "$env:PROJECT_NAME-${{ github.ref_name }}-Android.apk"
 
     # --------------------
-    # CREATE GITHUB RELEASE
+    # RELEASE
     # --------------------
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        name: "${{ env.PROJECT_NAME }} ${{ env.TAG_VERSION }}"
-        tag_name: ${{ env.TAG_VERSION }}
-        body: |
-          ## 🚀 ${{ env.PROJECT_NAME }} ${{ env.TAG_VERSION }}
-
-          ### ✨ What's New
-          - Migrated project to **.NET 9**
-          - Added **Windows MSIX installer**
-          - Added **Android APK build**
-          - Improved calculator UI & theming
-          - Automated CI/CD with GitHub Actions
-
-          ### 📦 Downloads
-          - **Windows**: MSIX installer
-          - **Android**: APK package
-
-          ---
-          Built automatically via GitHub Actions 🤖
+        name: "${{ env.PROJECT_NAME }} ${{ github.ref_name }}"
+        tag_name: ${{ github.ref_name }}
         files: |
           artifacts/windows/*.msix
           artifacts/android/*.apk
+        body: |
+          ## 🚀 ${{ env.PROJECT_NAME }} ${{ github.ref_name }}
+
+          ### ✨ Changes
+          - .NET 9 migration
+          - Windows MSIX installer
+          - Android APK build
+          - Automated CI/CD release pipeline
